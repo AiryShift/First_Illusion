@@ -18,6 +18,7 @@
 
 #define SIZE 1024
 #define TOTAL_NUM_BYTES (SIZE*SIZE*BYTES_PER_PIXEL)
+#define PIXEL_MAXVAL 255
 #define SQUARE_LOWER_BOUND 17
 #define SQUARE_UPPER_BOUND 1007
 #define BIG_SUBSQUARE_SIZE 66
@@ -50,6 +51,7 @@ int main(int argc, char *argv[]) {
     int xPos = 0;
     int yPos = 0;
     bits8 byte;
+    // Each iteration prints a pixel
     while (bytesPrinted < TOTAL_NUM_BYTES) {
         // If P(xPos, yPos) is in the sqaure
         if (xPos < SQUARE_UPPER_BOUND && xPos >= SQUARE_LOWER_BOUND &&
@@ -67,12 +69,12 @@ int main(int argc, char *argv[]) {
         } else { // In decorative background
             int i = 0;
             while (i < BYTES_PER_PIXEL) {
-                byte = rand() % 255; // Max value of a pixel
+                byte = rand() % PIXEL_MAXVAL;
                 fwrite(&byte, sizeof byte, 1, outputFile);
                 i++;
             }
         }
-
+        // Incrementing the counter, and position trackers
         xPos++;
         if (xPos == SIZE) {
             xPos = 0;
