@@ -1,8 +1,4 @@
 void writeHeader(FILE *file) {
-    assert(sizeof(bits8) == 1);
-    assert(sizeof(bits16) == 2);
-    assert(sizeof(bits32) == 4);
-
     bits16 magicNumber = MAGIC_NUMBER;
     fwrite(&magicNumber, sizeof magicNumber, 1, file);
 
