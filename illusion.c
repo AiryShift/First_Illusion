@@ -5,41 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "declarations.h"
 
-#define BYTES_PER_PIXEL 3
-#define BITS_PER_PIXEL (BYTES_PER_PIXEL*8)
-#define NUMBER_PLANES 1
-#define PIX_PER_METRE 2835
-#define MAGIC_NUMBER 0x4d42
-#define NO_COMPRESSION 0
-#define OFFSET 54
-#define DIB_HEADER_SIZE 40
-#define NUM_COLORS 0
-
-#define SIZE 1024
-#define TOTAL_NUM_BYTES (SIZE*SIZE*BYTES_PER_PIXEL)
-#define PIXEL_MAXVAL 255
-#define SQUARE_LOWER_BOUND 17
-#define SQUARE_UPPER_BOUND 1007
-#define BIG_SUBSQUARE_SIZE 66
-#define NUM_SMALL_SQUARES 2
-#define BMP_FILE "illusion1024_15.bmp"
-
-#define BLACK 0
-#define WHITE 255
-
-typedef unsigned char bits8;
-typedef unsigned short bits16;
-typedef unsigned int bits32;
-
-void writeHeader(FILE *file);
-
-int inSqaure(int xPos, int yPos);
-int inCircle(int xPos, int yPos);
-int calculateBoxType(int xPos, int yPos);
-int calculateBox(int colour, int subdivisions[NUM_SMALL_SQUARES]);
-void calculateBoundaries(int *subdivisions, int *boundaries);
-bits8 determineSquareColour(int xPos, int yPos);
+int temp[4];
 
 int main(int argc, char *argv[]) {
     // check that the types have the size i'm relying on here
@@ -144,7 +112,7 @@ void writeHeader(FILE *file) {
 
 int inSqaure(int xPos, int yPos) {
     return (xPos < SQUARE_UPPER_BOUND && xPos >= SQUARE_LOWER_BOUND &&
-            yPos >= SQUARE_LOWER_BOUND && yPos < SQUARE_UPPER_BOUND)
+            yPos >= SQUARE_LOWER_BOUND && yPos < SQUARE_UPPER_BOUND);
 }
 
 int inCircle(int xPos, int yPos){
@@ -155,14 +123,15 @@ int inCircle(int xPos, int yPos){
 int calculateBoxType(int xPos, int yPos) {
     // Makes the assumption that we're already in the circle
     // Returns black or white
-
+    return 0; // Placeholder
 }
 
 int calculateBox(int colour, int subdivisions[NUM_SMALL_SQUARES]) {
     // subdivisions is an array of 2 ints that specifies where the
     // contrasting box colours will go
-    int boundaries[4] = calculateBoundaries(subdivisions, boundaries);
-    if ()
+    int boundaries[4];
+    calculateBoundaries(subdivisions, boundaries);
+    return 0; // Placeholder
 }
 
 void calculateBoundaries(int *subdivisions, int *boundaries) {
