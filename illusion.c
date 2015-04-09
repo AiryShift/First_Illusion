@@ -32,6 +32,8 @@ typedef unsigned short bits16;
 typedef unsigned int bits32;
 
 void writeHeader(FILE *file);
+int inSqaure(int xPos, int yPos);
+int inCircle(int xPos, int yPos);
 bits8 determineSquareColour(int xPos, int yPos);
 
 int main(int argc, char *argv[]) {
@@ -53,10 +55,8 @@ int main(int argc, char *argv[]) {
     bits8 byte;
     // Each iteration prints a pixel
     while (bytesPrinted < TOTAL_NUM_BYTES) {
-        // If P(xPos, yPos) is in the sqaure
-        if (xPos < SQUARE_UPPER_BOUND && xPos >= SQUARE_LOWER_BOUND &&
-            yPos >= SQUARE_LOWER_BOUND && yPos < SQUARE_UPPER_BOUND) {
-            if (0/* Inside the circle (inside the square) */) {
+        if (inSqaure(xPos, yPos)) {
+            if (inCircle(xPos, yPos)) {
                 // shit happens
             } else { // In chessboard-like part of square
                 byte = determineSquareColour(xPos, yPos);
@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
                 i++;
             }
         }
-        // Incrementing the counter, and position trackers
+        // Increment the bytesPrinted counter and position trackers
         xPos++;
         if (xPos == SIZE) {
             xPos = 0;
@@ -135,6 +135,16 @@ void writeHeader(FILE *file) {
 
     bits32 importantColors = NUM_COLORS;
     fwrite(&importantColors, sizeof importantColors, 1, file);
+}
+
+int inSqaure(int xPos, int yPos) {
+    return (xPos < SQUARE_UPPER_BOUND && xPos >= SQUARE_LOWER_BOUND &&
+            yPos >= SQUARE_LOWER_BOUND && yPos < SQUARE_UPPER_BOUND)
+}
+
+int inCircle(int xPos, int yPos){
+    // TODO
+    return 0;
 }
 
 bits8 determineSquareColour(int xPos, int yPos) {
