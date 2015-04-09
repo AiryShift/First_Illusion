@@ -1,6 +1,11 @@
 /*
     Written by Julian Tu, 2015-04-09
     Outputs a bmp file of a visual illusion
+
+    BMP file is 1024x1024 pixels
+    Has an external border of 17 pixels, leaving internal square of
+    990 * 990
+    The sqaure is subdivided into chessboard of 5 * 5
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,6 +27,7 @@ int main(int argc, char *argv[]) {
     assert((outputFile != NULL) && "Cannot open file");
 
     writeHeader(outputFile);
+    // testReverseModulus();
 
     int bytesPrinted = 0;
     int xPos = 0;
@@ -66,7 +72,7 @@ int inSqaure(int xPos, int yPos) {
 }
 
 int inCircle(int xPos, int yPos){
-    // TODO
+
     return 0;
 }
 
@@ -88,6 +94,7 @@ void calculateBoundaries(int *subdivisions, int *boundaries) {
     // Write into boundaries[] the hardcoded relative boundaries of
     // the requested squares
     int i = 0;
+    int boundCount = 0;
     while (i < NUM_SMALL_SQUARES) {
         int location = subdivisions[i];
         if (location == 0) {
@@ -112,6 +119,7 @@ void calculateBoundaries(int *subdivisions, int *boundaries) {
             /* some code */
         }
         i++;
+        boundCount += 2;
     }
 }
 
@@ -133,4 +141,25 @@ bits8 determineSquareColour(int xPos, int yPos) {
         }
     }
     return byteColour;
+}
+
+int reverseModulus(int x, int y) {
+    // Calculates python's y // x
+    int runningTotal = 0;
+    int timesAdded = 0;
+    while (runningTotal <= y) {
+        runningTotal += x;
+        timesAdded++;
+    }
+    return timesAdded - 1;
+}
+
+void testReverseModulus(void) {
+    int a = 5;
+    int b = 6;
+    assert(reverseModulus(a, b) == 1);
+    a = 6;
+    b = 2;
+    assert(reverseModulus(a, b) == 0);
+    assert(reverseModulus(b, a) == 3);
 }

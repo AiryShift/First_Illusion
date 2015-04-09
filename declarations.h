@@ -13,7 +13,7 @@
 #define PIXEL_MAXVAL 255
 #define SQUARE_LOWER_BOUND 17
 #define SQUARE_UPPER_BOUND 1007
-#define BIG_SUBSQUARE_SIZE 66
+#define BIG_SUBSQUARE_SIZE 198
 #define NUM_SMALL_SQUARES 2
 #define BMP_FILE "illusion1024_15.bmp"
 
@@ -31,3 +31,5 @@ int calculateBoxType(int xPos, int yPos);
 int calculateBox(int colour, int subdivisions[NUM_SMALL_SQUARES]);
 void calculateBoundaries(int *subdivisions, int *boundaries);
 bits8 determineSquareColour(int xPos, int yPos);
+int reverseModulus(int x, int y);
+void testReverseModulus(void);
