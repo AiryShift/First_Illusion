@@ -22,6 +22,7 @@
 #define SQUARE_LOWER_BOUND 17
 #define SQUARE_UPPER_BOUND 1007
 #define BIG_SUBSQUARE_SIZE 66
+#define NUM_SMALL_SQUARES 2
 #define BMP_FILE "illusion1024_15.bmp"
 
 #define BLACK 0
@@ -32,8 +33,12 @@ typedef unsigned short bits16;
 typedef unsigned int bits32;
 
 void writeHeader(FILE *file);
+
 int inSqaure(int xPos, int yPos);
 int inCircle(int xPos, int yPos);
+int calculateBoxType(int xPos, int yPos);
+int calculateBox(int colour, int subdivisions[NUM_SMALL_SQUARES]);
+void calculateBoundaries(int *subdivisions, int *boundaries);
 bits8 determineSquareColour(int xPos, int yPos);
 
 int main(int argc, char *argv[]) {
@@ -145,6 +150,50 @@ int inSqaure(int xPos, int yPos) {
 int inCircle(int xPos, int yPos){
     // TODO
     return 0;
+}
+
+int calculateBoxType(int xPos, int yPos) {
+    // Makes the assumption that we're already in the circle
+    // Returns black or white
+
+}
+
+int calculateBox(int colour, int subdivisions[NUM_SMALL_SQUARES]) {
+    // subdivisions is an array of 2 ints that specifies where the
+    // contrasting box colours will go
+    int boundaries[4] = calculateBoundaries(subdivisions, boundaries);
+    if ()
+}
+
+void calculateBoundaries(int *subdivisions, int *boundaries) {
+    // Write into boundaries[] the hardcoded relative boundaries of
+    // the requested squares
+    int i = 0;
+    while (i < NUM_SMALL_SQUARES) {
+        int location = subdivisions[i];
+        if (location == 0) {
+            /* some code */
+        } else if (location == 1) {
+            /* some code */
+        } else if (location == 2) {
+            /* some code */
+        } else if (location == 3) {
+            /* some code */
+        } else if (location == 4) {
+            /* some code */
+        } else if (location == 5) {
+            /* some code */
+        } else if (location == 6) {
+            /* some code */
+        } else if (location == 7) {
+            /* some code */
+        } else if (location == 8) {
+            /* some code */
+        } else if (location == 9) {
+            /* some code */
+        }
+        i++;
+    }
 }
 
 bits8 determineSquareColour(int xPos, int yPos) {
