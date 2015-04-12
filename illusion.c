@@ -213,4 +213,7 @@ void testReverseModulus(void) {
     b = 2;
     assert(reverseModulus(a, b) == 0);
     assert(reverseModulus(b, a) == 3);
+    a = 6;
+    b = 6;
+    assert(reverseModulus(a, b) == 1);
 }
