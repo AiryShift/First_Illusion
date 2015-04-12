@@ -7,20 +7,15 @@
     990 * 990
     The sqaure is subdivided into chessboard of 5 * 5
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include "declarations.h"
-#include "bmp_header.h"
-
-int temp[4]; // Placeholder
+#include "bmp.h"
+#include <tests.h>
 
 int main(int argc, char *argv[]) {
-    // check that the types have the size i'm relying on here
-    assert(sizeof(bits8) == 1);
-    assert(sizeof(bits16) == 2);
-    assert(sizeof(bits32) == 4);
-
     FILE *outputFile;
 
     outputFile = fopen(BMP_FILE, "wb");
@@ -72,55 +67,7 @@ int inSqaure(int xPos, int yPos) {
 }
 
 int inCircle(int xPos, int yPos){
-
     return 0;
-}
-
-int calculateBoxType(int xPos, int yPos) {
-    // Makes the assumption that we're already in the circle
-    // Returns black or white
-    return 0; // Placeholder
-}
-
-int calculateBox(int colour, int subdivisions[NUM_SMALL_SQUARES]) {
-    // subdivisions is an array of 2 ints that specifies where the
-    // contrasting box colours will go
-    int boundaries[4];
-    calculateBoundaries(subdivisions, boundaries);
-    return 0; // Placeholder
-}
-
-void calculateBoundaries(int *subdivisions, int *boundaries) {
-    // Write into boundaries[] the hardcoded relative boundaries of
-    // the requested squares
-    int i = 0;
-    int boundCount = 0;
-    while (i < NUM_SMALL_SQUARES) {
-        int location = subdivisions[i];
-        if (location == 0) {
-            /* some code */
-        } else if (location == 1) {
-            /* some code */
-        } else if (location == 2) {
-            /* some code */
-        } else if (location == 3) {
-            /* some code */
-        } else if (location == 4) {
-            /* some code */
-        } else if (location == 5) {
-            /* some code */
-        } else if (location == 6) {
-            /* some code */
-        } else if (location == 7) {
-            /* some code */
-        } else if (location == 8) {
-            /* some code */
-        } else if (location == 9) {
-            /* some code */
-        }
-        i++;
-        boundCount += 2;
-    }
 }
 
 bits8 determineSquareColour(int xPos, int yPos) {
@@ -152,14 +99,4 @@ int reverseModulus(int x, int y) {
         timesAdded++;
     }
     return timesAdded - 1;
-}
-
-void testReverseModulus(void) {
-    int a = 5;
-    int b = 6;
-    assert(reverseModulus(a, b) == 1);
-    a = 6;
-    b = 2;
-    assert(reverseModulus(a, b) == 0);
-    assert(reverseModulus(b, a) == 3);
 }
