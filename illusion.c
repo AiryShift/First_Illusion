@@ -34,10 +34,6 @@
 #define BLACK 0
 #define WHITE 255
 
-typedef unsigned char bits8;
-typedef unsigned short bits16;
-typedef unsigned int bits32;
-
 typedef struct _boundaries {
     int firstLower;
     int firstUpper;
@@ -45,12 +41,14 @@ typedef struct _boundaries {
     int secondUpper;
 } boundaries;
 
-int inSqaure(int xPos, int yPos);
-int inCircle(int xPos, int yPos);
-int calculateBoxType(int xPos, int yPos);
-int calculateBox(int colour, int subdivisions[NUM_SMALL_SQUARES]);
-void calculateBoundaries(int *subdivisions, int *boundaries);
-bits8 determineSquareColour(int xPos, int yPos);
+typedef struct _coordinate {
+    int xPos;
+    int yPos;
+} coordinate;
+
+int inSqaure(coordinate checking);
+int inCircle(coordinate checking);
+unsigned char determineSquareColour(coordinate checking);
 int reverseModulus(int x, int y);
 
 void writeHeader(FILE *file);
@@ -67,19 +65,17 @@ int main(int argc, char *argv[]) {
     assert((outputFile != NULL) && "Cannot open file");
 
     writeHeader(outputFile);
-    // testReverseModulus();
 
     int bytesPrinted = 0;
-    int xPos = 0;
-    int yPos = 0;
-    bits8 byte;
+    coordinate currentPosition = {0, 0};
+    unsigned char byte;
     // Each iteration prints a pixel
     while (bytesPrinted < TOTAL_NUM_BYTES) {
-        if (inSqaure(xPos, yPos)) {
-            if (inCircle(xPos, yPos)) {
+        if (inSqaure(currentPosition)) {
+            if (inCircle(currentPosition)) {
                 // shit happens
             } else { // In chessboard-like part of square
-                byte = determineSquareColour(xPos, yPos);
+                byte = determineSquareColour(currentPosition);
                 int i = 0;
                 while (i < BYTES_PER_PIXEL) {
                     fwrite(&byte, sizeof byte, 1, outputFile);
@@ -95,10 +91,10 @@ int main(int argc, char *argv[]) {
             }
         }
         // Increment the bytesPrinted counter and position trackers
-        xPos++;
-        if (xPos == SIZE) {
-            xPos = 0;
-            yPos++;
+        currentPosition.xPos++;
+        if (currentPosition.xPos == SIZE) {
+            currentPosition.xPos = 0;
+            currentPosition.yPos++;
         }
         bytesPrinted += 3;
     }
@@ -106,27 +102,27 @@ int main(int argc, char *argv[]) {
     return EXIT_SUCCESS;
 }
 
-int inSqaure(int xPos, int yPos) {
-    return (xPos < SQUARE_UPPER_BOUND && xPos >= SQUARE_LOWER_BOUND &&
-            yPos >= SQUARE_LOWER_BOUND && yPos < SQUARE_UPPER_BOUND);
+int inSqaure(coordinate checking) {
+    return (checking.xPos < SQUARE_UPPER_BOUND && checking.xPos >= SQUARE_LOWER_BOUND &&
+            checking.yPos < SQUARE_UPPER_BOUND && checking.yPos >= SQUARE_LOWER_BOUND);
 }
 
-int inCircle(int xPos, int yPos){
+int inCircle(coordinate checking){
     return 0;
 }
 
-bits8 determineSquareColour(int xPos, int yPos) {
-    bits8 byteColour;
-    xPos -= SQUARE_LOWER_BOUND;
-    yPos -= SQUARE_LOWER_BOUND;
-    if (xPos % (2 * BIG_SUBSQUARE_SIZE) < BIG_SUBSQUARE_SIZE) {
-        if (yPos % (2 * BIG_SUBSQUARE_SIZE) < BIG_SUBSQUARE_SIZE) {
+unsigned char determineSquareColour(coordinate checking) {
+    unsigned char byteColour;
+    checking.xPos -= SQUARE_LOWER_BOUND;
+    checking.yPos -= SQUARE_LOWER_BOUND;
+    if (checking.xPos % (2 * BIG_SUBSQUARE_SIZE) < BIG_SUBSQUARE_SIZE) {
+        if (checking.yPos % (2 * BIG_SUBSQUARE_SIZE) < BIG_SUBSQUARE_SIZE) {
             byteColour = WHITE;
         } else {
             byteColour = BLACK;
         }
     } else {
-        if (yPos % (2 * BIG_SUBSQUARE_SIZE) < BIG_SUBSQUARE_SIZE) {
+        if (checking.yPos % (2 * BIG_SUBSQUARE_SIZE) < BIG_SUBSQUARE_SIZE) {
             byteColour = BLACK;
         } else {
             byteColour = WHITE;
@@ -147,49 +143,49 @@ int reverseModulus(int x, int y) {
 }
 
 void writeHeader(FILE *file) {
-    bits16 magicNumber = MAGIC_NUMBER;
+    unsigned short magicNumber = MAGIC_NUMBER;
     fwrite(&magicNumber, sizeof magicNumber, 1, file);
 
-    bits32 fileSize = OFFSET + (SIZE * SIZE * BYTES_PER_PIXEL);
+    unsigned int fileSize = OFFSET + (SIZE * SIZE * BYTES_PER_PIXEL);
     fwrite(&fileSize, sizeof fileSize, 1, file);
 
-    bits32 reserved = 0;
+    unsigned int reserved = 0;
     fwrite(&reserved, sizeof reserved, 1, file);
 
-    bits32 offset = OFFSET;
+    unsigned int offset = OFFSET;
     fwrite(&offset, sizeof offset, 1, file);
 
-    bits32 dibHeaderSize = DIB_HEADER_SIZE;
+    unsigned int dibHeaderSize = DIB_HEADER_SIZE;
     fwrite(&dibHeaderSize, sizeof dibHeaderSize, 1, file);
 
-    bits32 width = SIZE;
+    unsigned int width = SIZE;
     fwrite(&width, sizeof width, 1, file);
 
-    bits32 height = SIZE;
+    unsigned int height = SIZE;
     fwrite(&height, sizeof height, 1, file);
 
-    bits16 planes = NUMBER_PLANES;
+    unsigned short planes = NUMBER_PLANES;
     fwrite(&planes, sizeof planes, 1, file);
 
-    bits16 bitsPerPixel = BITS_PER_PIXEL;
+    unsigned short bitsPerPixel = BITS_PER_PIXEL;
     fwrite(&bitsPerPixel, sizeof bitsPerPixel, 1, file);
 
-    bits32 compression = NO_COMPRESSION;
+    unsigned int compression = NO_COMPRESSION;
     fwrite(&compression, sizeof compression, 1, file);
 
-    bits32 imageSize = (SIZE * SIZE * BYTES_PER_PIXEL);
+    unsigned int imageSize = (SIZE * SIZE * BYTES_PER_PIXEL);
     fwrite(&imageSize, sizeof imageSize, 1, file);
 
-    bits32 hResolution = PIX_PER_METRE;
+    unsigned int hResolution = PIX_PER_METRE;
     fwrite(&hResolution, sizeof hResolution, 1, file);
 
-    bits32 vResolution = PIX_PER_METRE;
+    unsigned int vResolution = PIX_PER_METRE;
     fwrite(&vResolution, sizeof vResolution, 1, file);
 
-    bits32 numColors = NUM_COLORS;
+    unsigned int numColors = NUM_COLORS;
     fwrite(&numColors, sizeof numColors, 1, file);
 
-    bits32 importantColors = NUM_COLORS;
+    unsigned int importantColors = NUM_COLORS;
     fwrite(&importantColors, sizeof importantColors, 1, file);
 }
 
