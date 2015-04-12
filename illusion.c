@@ -46,9 +46,17 @@ typedef struct _coordinate {
     int yPos;
 } coordinate;
 
+typedef struct _rgb {
+    unsigned char red;
+    unsigned char green;
+    unsigned char blue;
+} rgb;
+
 int inSqaure(coordinate checking);
 int inCircle(coordinate checking);
-unsigned char determineSquareColour(coordinate checking);
+rgb determineSquareColor(coordinate checking);
+rgb randColor(void);
+void writePixel(FILE *file, rgb colorFormat);
 int reverseModulus(int x, int y);
 
 void writeHeader(FILE *file);
@@ -68,27 +76,19 @@ int main(int argc, char *argv[]) {
 
     int bytesPrinted = 0;
     coordinate currentPosition = {0, 0};
-    unsigned char byte;
+    rgb colorFormat;
     // Each iteration prints a pixel
     while (bytesPrinted < TOTAL_NUM_BYTES) {
         if (inSqaure(currentPosition)) {
             if (inCircle(currentPosition)) {
                 // shit happens
             } else { // In chessboard-like part of square
-                byte = determineSquareColour(currentPosition);
-                int i = 0;
-                while (i < BYTES_PER_PIXEL) {
-                    fwrite(&byte, sizeof byte, 1, outputFile);
-                    i++;
-                }
+                colorFormat = determineSquareColor(currentPosition);
+                writePixel(outputFile, colorFormat);
             }
         } else { // In decorative background
-            int i = 0;
-            while (i < BYTES_PER_PIXEL) {
-                byte = rand() % PIXEL_MAXVAL;
-                fwrite(&byte, sizeof byte, 1, outputFile);
-                i++;
-            }
+            colorFormat = randColor();
+            writePixel(outputFile, colorFormat);
         }
         // Increment the bytesPrinted counter and position trackers
         currentPosition.xPos++;
@@ -96,7 +96,7 @@ int main(int argc, char *argv[]) {
             currentPosition.xPos = 0;
             currentPosition.yPos++;
         }
-        bytesPrinted += 3;
+        bytesPrinted += BYTES_PER_PIXEL;
     }
     fclose(outputFile);
     return EXIT_SUCCESS;
@@ -111,7 +111,7 @@ int inCircle(coordinate checking){
     return 0;
 }
 
-unsigned char determineSquareColour(coordinate checking) {
+rgb determineSquareColor(coordinate checking) {
     unsigned char byteColour;
     checking.xPos -= SQUARE_LOWER_BOUND;
     checking.yPos -= SQUARE_LOWER_BOUND;
@@ -128,7 +128,19 @@ unsigned char determineSquareColour(coordinate checking) {
             byteColour = WHITE;
         }
     }
-    return byteColour;
+    rgb pixelColor = {byteColour, byteColour, byteColour};
+    return pixelColor;
+}
+
+rgb randColor(void) {
+    rgb pixel = {rand() % PIXEL_MAXVAL + 1, rand() % PIXEL_MAXVAL + 1, rand() % PIXEL_MAXVAL + 1};
+    return pixel;
+}
+
+void writePixel(FILE *file, rgb colorFormat) {
+    fwrite(&colorFormat.blue, sizeof colorFormat.blue, 1, file);
+    fwrite(&colorFormat.green, sizeof colorFormat.green, 1, file);
+    fwrite(&colorFormat.red, sizeof colorFormat.red, 1, file);
 }
 
 int reverseModulus(int x, int y) {
